@@ -1,6 +1,10 @@
-SRC_FILES:=$(wildcard *.c)
+CLIENT=client
 
-NAME=libftprintf.a
+SERVER=server
+
+CLIENT_C=client.c
+
+SERVER_C=server.c
 
 LIBFT=libft/libft.a
 
@@ -10,35 +14,37 @@ CFLAGS=-Wall -Wextra -Werror
 
 OBJ_DIR=obj
 
-HDR=ft_printf.h
+HDR=minitalk.h
 
-SRC_NAMES=$(patsubst %.c,%.o,$(SRC_FILES))
+SERVER_OBJ=$(SERVER:.c=.o)
 
-SRC_NAMES_O=$(addprefix $(OBJ_DIR)/, $(SRC_NAMES))
+CLIENT_OBJ=$(CLIENT:.c=.o)
+
+LIB=-Llibft -lft
+
+all: server client $(LIBFT)
+
+$(LIBFT):
+	make -C libft
+	@echo "done libft"
 
 $(OBJ_DIR):
 	mkdir $@
 
-%.o: %.c $(HDR) $(OBJ_DIR)
-	$(CC) $(CFLAGS) -c $< -o $(OBJ_DIR)/$@ 
+server: $(SERVER_C)
+	@echo "making server"
+	$(CC) $(CFLAGS) $(LIB) $(SERVER_C) -o server
 
-$(LIBFT):
-	make -C libft
-
-$(NAME): $(LIBFT) $(OBJ_DIR) $(SRC_NAMES)
-	cp libft/libft.a $@
-	ar -rcs $@ $(SRC_NAMES_O)
-
-all: $(NAME)
-
-bonus: all
+client:
+	@echo "making server"
+	$(CC) $(CFLAGS) $(LIB) $(CLIENT_C) -o client
 
 clean:
-	rm -rf obj/
 	make -C libft $@
 
 fclean: clean
-	rm -f libftprintf.a
+	rm server
+	rm client
 	make -C libft $@
 
 re: fclean all

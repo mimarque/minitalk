@@ -22,7 +22,7 @@ CLIENT_OBJ=$(CLIENT:.c=.o)
 
 LIB=-Llibft -lft
 
-all: server client $(LIBFT)
+all: $(LIBFT) server client
 
 $(LIBFT):
 	make -C libft
